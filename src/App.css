@@ -1,0 +1,59 @@
+.parallax {
+  height: 100vh;
+  width: 100%;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  /* scroll-snap-align: start; */
+}
+
+#section1 {
+  background-image: url("https://static.vecteezy.com/system/resources/previews/013/454/399/large_2x/successful-team-group-of-cheerful-young-people-discussing-something-with-smile-and-gesturing-while-leaning-to-the-table-in-office-photo.jpg");
+}
+
+/* section 2 */
+#section2Content{
+  width: 500px;
+}
+
+#section2ImgContainer{ 
+  height: 500px;
+}
+
+#section2ImgContainer img, #section4ImgContainer img {
+  height: 100%;
+}
+
+
+/* Home Section 3 */
+#section3{
+  background-image: url("https://plus.unsplash.com/premium_photo-1661781369956-47a71a217b80?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8b2ZmaWNlJTIwY29udmVyc2F0aW9ufGVufDB8fDB8fHww");
+}
+
+
+#section4Content{
+  width: 500px;
+}
+
+#section4ImgContainer{
+  height: 400px;
+  width: 600px;
+}
+
+#section4ImgContainer img{
+  height: 90px;
+  width: 110px;
+}
+
+
+footer{
+  color: white;
+  /* width: 100vw; */
+}
+
+footer p {
+  text-align: justify;
+}
+footer ul{
+  list-style: none;
+}
