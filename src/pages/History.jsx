@@ -34,7 +34,7 @@ const History = () => {
 
   const onDeleteClick = async (id) => {
     try {
-      let apiResponse = deleteResume(id);
+      let apiResponse = await deleteResume(id);
       if(apiResponse.status == 200){
         Swal.fire({
           title: "Deleted",

@@ -13,3 +13,7 @@ export const addResumeData = async (reqBody) => {
 export const deleteResume = async (id) => {
     return await axiosConfig('delete', `${BaseURL}/resumeDatas/${id}`, {});
 }
+
+export const editResume = async (id, reqBody) => {
+    return await axiosConfig('put', `${BaseURL}/resumeDatas/${id}`, reqBody);
+}

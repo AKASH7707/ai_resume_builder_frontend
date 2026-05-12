@@ -13,22 +13,25 @@ import jobSkill from '../assets/jobSkills.json';
 import Modal from '@mui/material/Modal';
 import { MdEdit, MdOutlineDelete } from 'react-icons/md';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { editResume } from '../services/allAPI';
+import Swal from 'sweetalert2';
 
-const EditComp = ({resume}) => {
+
+const EditComp = ({ resume }) => {
 
     const [resumeData, setResumeData] = React.useState({
-        fullName : '',
-        location : '',
-        jobTitle : '',
-        email : '',
-        contactNumber : '',
-        linkedin : '',
-        github : '',
-        degree : '',
-        college : '',
-        yearOfGrad : '',
-        skills : [],
-        summary : ''
+        fullName: '',
+        location: '',
+        jobTitle: '',
+        email: '',
+        contactNumber: '',
+        linkedin: '',
+        github: '',
+        degree: '',
+        college: '',
+        yearOfGrad: '',
+        skills: [],
+        summary: ''
     })
 
     const [inputSkill, setInputSkill] = React.useState('');
@@ -36,17 +39,44 @@ const EditComp = ({resume}) => {
     const removeSkill = (selectedSkill) => {
         let existingSkills = resumeData.skills;
         let newSkills = existingSkills.filter((eachSkill) => eachSkill != selectedSkill);
-        setResumeData({...resumeData, skills: newSkills})
+        setResumeData({ ...resumeData, skills: newSkills })
     }
 
     const addSkill = () => {
         let existingSkills = resumeData.skills;
-        if(!existingSkills.includes(inputSkill)){
+        if (!existingSkills.includes(inputSkill)) {
             existingSkills.push(inputSkill);
-        }else{
+        } else {
+            // Swal.fire({
+            //     icon: "error",
+            //     title: "Oops...",
+            //     text: "this skill is already added"
+            // });
             alert("this skill is already added")
         }
-        setResumeData({...resumeData, skills: existingSkills})
+        setResumeData({ ...resumeData, skills: existingSkills })
+    }
+
+    const editClick = async () => {
+        try {
+            let apiResponse = await editResume(resumeData.id, resumeData);
+            if(apiResponse.status === 200){
+                Swal.fire({
+                    title: "Edited Successfully",
+                    // text: "You clicked the button!",
+                    icon: "success"
+                });
+                handleClose();
+            }
+        } catch (error) {
+            console.log(error);
+            
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Failed to Edit"
+            });
+        }
     }
 
     React.useEffect(() => {
@@ -71,7 +101,7 @@ const EditComp = ({resume}) => {
 
 
     return (
-        <div>
+        <Box>
             <Button onClick={handleOpen} className='fs-2 text-secondary'><MdEdit /></Button>
             <Modal
                 open={open}
@@ -85,78 +115,84 @@ const EditComp = ({resume}) => {
                     </Typography>
                     <Box className='row'>
                         <Box className='col-6 d-grid gap-3'>
-                        {/* <Typography className='text-center p-4 fw-bold' variant='h4' component={"h1"}>Personal Details</Typography> */}
-                        <TextField value={resumeData?.fullName} onChange={(e) => setResumeData({...resumeData, fullName:e.target.value})} className="w-100" id="standard-basic" label="Full Name" variant="standard" />
+                            {/* <Typography className='text-center p-4 fw-bold' variant='h4' component={"h1"}>Personal Details</Typography> */}
+                            <TextField value={resumeData?.fullName} onChange={(e) => setResumeData({ ...resumeData, fullName: e.target.value })} className="w-100" id="standard-basic" label="Full Name" variant="standard" />
                             {/* since resume data is an object we need all the key value pairs, we set setResumData as an object and spread all the existing datas in the resume data to it, then sets key and assign its value */}
-                        <TextField value={resumeData?.location} onChange={(e) => setResumeData({...resumeData, location:e.target.value})} className="w-100 mb-2" id="standard-basic" label="Location" variant="standard" />
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Job Role</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={resumeData?.jobTitle}
-                                label="Age"
-                                onChange={(e) => setResumeData({...resumeData, jobTitle: e.target.value})}
-            
-                            //   onChange={handleChange}
-                            >   
+                            <TextField value={resumeData?.location} onChange={(e) => setResumeData({ ...resumeData, location: e.target.value })} className="w-100 mb-2" id="standard-basic" label="Location" variant="standard" />
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Job Role</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={resumeData?.jobTitle}
+                                    label="Age"
+                                    onChange={(e) => setResumeData({ ...resumeData, jobTitle: e.target.value })}
+
+                                //   onChange={handleChange}
+                                >
+                                    {
+                                        jobJson?.jobRoles?.map((eachJob) => (
+                                            <MenuItem value={eachJob}>{eachJob}</MenuItem>
+                                        ))
+                                    }
+
+
+                                </Select>
+                            </FormControl>
+
+                            {/* <Typography className='text-center p-4 fw-bold' variant='h4' component={"h1"}>Contact Details</Typography> */}
+                            <TextField value={resumeData?.email} onChange={(e) => setResumeData({ ...resumeData, email: e.target.value })} className="w-100" id="standard-basic" label="E-mail" variant="standard" />
+                            <TextField value={resumeData?.contactNumber} onChange={(e) => setResumeData({ ...resumeData, contactNumber: e.target.value })} className="w-100" id="standard-basic" label="Contact Number" variant="standard" />
+                            <TextField value={resumeData?.linkedin} onChange={(e) => setResumeData({ ...resumeData, linkedin: e.target.value })} className="w-100" id="standard-basic" label="Linkedin Link" variant="standard" />
+                            <TextField value={resumeData?.github} onChange={(e) => setResumeData({ ...resumeData, github: e.target.value })} className="w-100" id="standard-basic" label="GitHub Link" variant="standard" />
+                            <TextField value={resumeData?.degree} onChange={(e) => setResumeData({ ...resumeData, degree: e.target.value })} className="w-100" id="standard-basic" label="Bachelor's Degree" variant="standard" />
+                            <TextField value={resumeData?.college} onChange={(e) => setResumeData({ ...resumeData, college: e.target.value })} className="w-100" id="standard-basic" label="University / Collage Name" variant="standard" />
+                        </Box>
+                        <Box className='col-6 d-grid gap-1'>
+
+
+                            {/* <Typography className='text-center p-4 fw-bold' variant='h4' component={"h1"}>Educational Details</Typography> */}
+
+                            
+                            <TextField value={resumeData?.yearOfGrad} onChange={(e) => setResumeData({ ...resumeData, yearOfGrad: e.target.value })} className="w-100" id="standard-basic" label="Year of Graduation" variant="standard" />
+                            <TextareaAutosize className='mt-3'
+                                onChange={(e) => setResumeData({ ...resumeData, summary: e.target.value })}
+                                value={resumeData?.summary}
+                                aria-label="minimum height"
+                                minRows={3}
+                                placeholder="summary"
+                                style={{ width: '100%' }}
+                            />
+
+                            <Typography variant='h6' component={'h6'}>Skills</Typography>
+                            <Box className='row gap-2'>
                                 {
-                                    jobJson ?.jobRoles?.map((eachJob) => (
-                                        <MenuItem value={eachJob}>{eachJob}</MenuItem>
+                                    resumeData?.skills?.map((eachSkill) => (
+
+                                        <Box className='border border-dark col-5 d-flex p-2'>
+                                            <Typography>{eachSkill}</Typography>
+                                            <Button onClick={() => removeSkill(eachSkill)} className='btn text-danger'><MdOutlineDelete className='fs-3' /></Button>
+                                        </Box>
+
+
                                     ))
                                 }
-                                
-                            
-                            </Select>
-                        </FormControl>
+                                <Box className='d-flex'>
+                                    <TextField className="w-100" id="standard-basic" label="Add Skills" variant="standard" onChange={(e) => setInputSkill(e.target.value)} />
+                                    <Button onClick={addSkill} variant='outlined' >Add</Button>
+                                </Box>
 
-                        {/* <Typography className='text-center p-4 fw-bold' variant='h4' component={"h1"}>Contact Details</Typography> */}
-                        <TextField value={resumeData?.email} onChange={(e) => setResumeData({...resumeData, email:e.target.value})} className="w-100" id="standard-basic" label="E-mail" variant="standard" />
-                        <TextField value={resumeData?.contactNumber} onChange={(e) => setResumeData({...resumeData, contactNumber:e.target.value})} className="w-100" id="standard-basic" label="Contact Number" variant="standard" />
-                        <TextField value={resumeData?.linkedin} onChange={(e) => setResumeData({...resumeData, linkedin:e.target.value})} className="w-100" id="standard-basic" label="Linkedin Link" variant="standard" />
-                        <TextField value={resumeData?.github} onChange={(e) => setResumeData({...resumeData, github:e.target.value})} className="w-100" id="standard-basic" label="GitHub Link" variant="standard" />     
-                     
-                        </Box>
-                        <Box className='col-6 d-grid gap-3'>
-                      
-
-                        {/* <Typography className='text-center p-4 fw-bold' variant='h4' component={"h1"}>Educational Details</Typography> */}
-                        <TextField value={resumeData?.degree} onChange={(e) => setResumeData({...resumeData, degree:e.target.value})} className="w-100" id="standard-basic" label="Bachelor's Degree" variant="standard" />
-                        <TextField value={resumeData?.college} onChange={(e) => setResumeData({...resumeData, college:e.target.value})} className="w-100" id="standard-basic" label="University / Collage Name" variant="standard" />
-                        <TextField value={resumeData?.yearOfGrad} onChange={(e) => setResumeData({...resumeData, yearOfGrad:e.target.value})} className="w-100" id="standard-basic" label="Year of Graduation" variant="standard" />
-                        <TextareaAutosize className='mt-3'
-                        onChange={(e) => setResumeData({...resumeData, summary: e.target.value})}
-                        value={resumeData?.summary}
-                        aria-label="minimum height"
-                        minRows={3}
-                        placeholder="summary"
-                        style={{ width: '100%' }}
-                        />
-
-                        <Typography variant='h6' component={'h6'}>Skills</Typography>
-                        <Box className='row gap-2'>
-                            {
-                                resumeData?.skills?.map((eachSkill) => (
-                                
-                                    <Box className='border border-dark col-5 d-flex p-2'>
-                                        <Typography>{eachSkill}</Typography>
-                                        <Button onClick={()=>removeSkill(eachSkill)} className='btn text-danger'><MdOutlineDelete className='fs-3' /></Button>
-                                    </Box>
-                                  
-
-                                ))
-                            }
-                            <Box className='d-flex'>
-                                <TextField className="w-100" id="standard-basic" label="Add Skills" variant="standard" onChange={(e) => setInputSkill(e.target.value)} />
-                                <Button onClick={addSkill} variant='outlined' >Add</Button>
+                                <Box className='mt-3' >
+                                    <Button onClick={handleClose} variant='contained' className='me-3' >Cancel</Button>
+                                    <Button onClick={editClick} variant='contained' >Edit</Button>
+                                </Box>
                             </Box>
-                        </Box>
 
                         </Box>
-                    </Box>
+                    </Box>      
                 </Box>
             </Modal>
-        </div>
+        </Box>
     );
 }
 
